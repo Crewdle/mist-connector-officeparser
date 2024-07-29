@@ -1,0 +1,33 @@
+{
+  "name": "@crewdle/mist-connector-officeparser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/types/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "copy-sdk-types": "cp -r ../web-sdk-types/dist ./node_modules/@crewdle/web-sdk-types"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Crewdle/mist-connector-officeparser.git"
+  },
+  "keywords": [],
+  "author": "Crewdle",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Crewdle/mist-connector-officeparser/issues"
+  },
+  "homepage": "https://github.com/Crewdle/mist-connector-officeparser#readme",
+  "files": [
+    "dist/"
+  ],
+  "dependencies": {
+    "officeparser": "^4.1.1"
+  },
+  "devDependencies": {
+    "@crewdle/web-sdk-types": "^1.0.17",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.5.4"
+  }
+}
