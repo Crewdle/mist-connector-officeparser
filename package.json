@@ -6,7 +6,8 @@
   "types": "dist/types/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "copy-sdk-types": "cp -r ../web-sdk-types/dist ./node_modules/@crewdle/web-sdk-types"
+    "copy-sdk-types": "cp -r ../web-sdk-types/dist ./node_modules/@crewdle/web-sdk-types",
+    "types": "cd ../web-sdk-types && npm run build && cd ../mist-connector-officeparser && npm run copy-sdk-types"
   },
   "repository": {
     "type": "git",

@@ -23,6 +23,22 @@ export class OfficeParserConnector implements IDocumentParserConnector{
     }
   }
 
+  getSupportedFileTypes(): string[] {
+    return [
+      '.docx',
+      '.pptx',
+      '.xlsx',
+      '.odt',
+      '.odp',
+      '.ods',
+      '.pdf',
+      ];
+  }
+
+  supports(file: IFile): boolean {
+    return this.getSupportedFileTypes().includes(`.${file.name.split('.').pop() || ''}`);
+  }
+
   private static async processQueue(): Promise<void> {
     if (OfficeParserConnector.isProcessing) {
       return;
