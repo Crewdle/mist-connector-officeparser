@@ -1,6 +1,6 @@
 {
   "name": "@crewdle/mist-connector-officeparser",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",
@@ -27,7 +27,7 @@
     "officeparser": "^4.1.1"
   },
   "devDependencies": {
-    "@crewdle/web-sdk-types": "^1.0.17",
+    "@crewdle/web-sdk-types": "^1.0.19",
     "@types/node": "^22.0.0",
     "typescript": "^5.5.4"
   }
