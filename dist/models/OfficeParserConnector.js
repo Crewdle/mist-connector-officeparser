@@ -13,6 +13,20 @@ export class OfficeParserConnector {
             throw new Error(`Failed to parse the file: ${e}`);
         }
     }
+    getSupportedFileTypes() {
+        return [
+            '.docx',
+            '.pptx',
+            '.xlsx',
+            '.odt',
+            '.odp',
+            '.ods',
+            '.pdf',
+        ];
+    }
+    supports(file) {
+        return this.getSupportedFileTypes().includes(`.${file.name.split('.').pop() || ''}`);
+    }
     static async processQueue() {
         if (OfficeParserConnector.isProcessing) {
             return;
