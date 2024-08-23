@@ -25,7 +25,7 @@ export class OfficeParserConnector {
         ];
     }
     supports(file) {
-        return this.getSupportedFileTypes().includes(`.${file.name.split('.').pop() || ''}`);
+        return this.getSupportedFileTypes().includes(`.${file.name.split('.').pop()?.toLowerCase() || ''}`);
     }
     static async processQueue() {
         if (OfficeParserConnector.isProcessing) {

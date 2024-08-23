@@ -36,7 +36,7 @@ export class OfficeParserConnector implements IDocumentParserConnector{
   }
 
   supports(file: IFile): boolean {
-    return this.getSupportedFileTypes().includes(`.${file.name.split('.').pop() || ''}`);
+    return this.getSupportedFileTypes().includes(`.${file.name.split('.').pop()?.toLowerCase() || ''}`);
   }
 
   private static async processQueue(): Promise<void> {
