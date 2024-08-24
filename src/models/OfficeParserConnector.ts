@@ -14,10 +14,10 @@ export class OfficeParserConnector implements IDocumentParserConnector{
 
   public async parse(file: IFile): Promise<string> {
     try {
-      return new Promise<string>((resolve, reject) => {
+      return await (new Promise<string>((resolve, reject) => {
         OfficeParserConnector.queue.push({ file, resolve, reject });
         OfficeParserConnector.processQueue();
-      });
+      }));
     } catch (e) {
       throw new Error(`Failed to parse the file: ${e}`);
     }
