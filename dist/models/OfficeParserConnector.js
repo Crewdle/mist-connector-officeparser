@@ -4,10 +4,10 @@ export class OfficeParserConnector {
     static isProcessing = false;
     async parse(file) {
         try {
-            return new Promise((resolve, reject) => {
+            return await (new Promise((resolve, reject) => {
                 OfficeParserConnector.queue.push({ file, resolve, reject });
                 OfficeParserConnector.processQueue();
-            });
+            }));
         }
         catch (e) {
             throw new Error(`Failed to parse the file: ${e}`);
@@ -25,7 +25,7 @@ export class OfficeParserConnector {
         ];
     }
     supports(file) {
-        return this.getSupportedFileTypes().includes(`.${file.name.split('.').pop() || ''}`);
+        return this.getSupportedFileTypes().includes(`.${file.name.split('.').pop()?.toLowerCase() || ''}`);
     }
     static async processQueue() {
         if (OfficeParserConnector.isProcessing) {
