@@ -3,7 +3,7 @@ import officeParser from 'officeparser';
 import { IFile, IDocumentParserConnector } from '@crewdle/web-sdk-types';
 
 interface IParserQueue {
-  file: IFile;
+  file: IFile | File;
   resolve: (data: string) => void;
   reject: (error: Error) => void;
 }
@@ -12,7 +12,7 @@ export class OfficeParserConnector implements IDocumentParserConnector{
   private static queue: IParserQueue[] = [];
   private static isProcessing = false;
 
-  public async parse(file: IFile): Promise<string> {
+  public async parse(file: IFile | File): Promise<string> {
     try {
       return await (new Promise<string>((resolve, reject) => {
         OfficeParserConnector.queue.push({ file, resolve, reject });
@@ -35,7 +35,7 @@ export class OfficeParserConnector implements IDocumentParserConnector{
       ];
   }
 
-  supports(file: IFile): boolean {
+  supports(file: IFile | File): boolean {
     return this.getSupportedFileTypes().includes(`.${file.name.split('.').pop()?.toLowerCase() || ''}`);
   }
 
