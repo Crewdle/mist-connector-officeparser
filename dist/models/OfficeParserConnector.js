@@ -1,12 +1,23 @@
+import * as fs from 'fs';
 import officeParser from 'officeparser';
 export class OfficeParserConnector {
+    options;
     static queue = [];
     static isProcessing = false;
+    rootPath;
+    constructor(options) {
+        this.options = options;
+        const baseFolder = options?.baseFolder ?? '.';
+        this.rootPath = `${baseFolder}/officeParserTemp`;
+        if (!fs.existsSync(this.rootPath)) {
+            fs.mkdirSync(this.rootPath);
+        }
+    }
     async parse(file) {
         try {
             return await (new Promise((resolve, reject) => {
                 OfficeParserConnector.queue.push({ file, resolve, reject });
-                OfficeParserConnector.processQueue();
+                OfficeParserConnector.processQueue(this.rootPath);
             }));
         }
         catch (e) {
@@ -27,7 +38,7 @@ export class OfficeParserConnector {
     supports(file) {
         return this.getSupportedFileTypes().includes(`.${file.name.split('.').pop()?.toLowerCase() || ''}`);
     }
-    static async processQueue() {
+    static async processQueue(rootPath) {
         if (OfficeParserConnector.isProcessing) {
             return;
         }
@@ -36,14 +47,15 @@ export class OfficeParserConnector {
             const { file, resolve, reject } = OfficeParserConnector.queue.shift();
             try {
                 const buffer = Buffer.from(await file.arrayBuffer());
-                const data = await officeParser.parseOfficeAsync(buffer);
+                const data = await officeParser.parseOfficeAsync(buffer, {
+                    tempFilesLocation: rootPath,
+                });
                 resolve(data);
                 await new Promise((resolve) => setTimeout(resolve, 1000));
             }
             catch (e) {
-                if (e instanceof Error) {
-                    reject(e);
-                }
+                console.error('Error parsing the file', e);
+                reject(e);
             }
         }
         OfficeParserConnector.isProcessing = false;

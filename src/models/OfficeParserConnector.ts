@@ -1,6 +1,9 @@
+import * as fs from 'fs';
+
 import officeParser from 'officeparser';
 
 import { IFile, IDocumentParserConnector } from '@crewdle/web-sdk-types';
+import { IOfficeParserOptions } from './OfficeParserOptions';
 
 interface IParserQueue {
   file: IFile | File;
@@ -11,12 +14,24 @@ interface IParserQueue {
 export class OfficeParserConnector implements IDocumentParserConnector{
   private static queue: IParserQueue[] = [];
   private static isProcessing = false;
+  private rootPath: string;
+
+  constructor(
+    readonly options?: IOfficeParserOptions,
+  ) {
+    const baseFolder = options?.baseFolder ?? '.';
+    this.rootPath = `${baseFolder}/officeParserTemp`;
+
+    if (!fs.existsSync(this.rootPath)) {
+      fs.mkdirSync(this.rootPath);
+    }
+  }
 
   public async parse(file: IFile | File): Promise<string> {
     try {
       return await (new Promise<string>((resolve, reject) => {
         OfficeParserConnector.queue.push({ file, resolve, reject });
-        OfficeParserConnector.processQueue();
+        OfficeParserConnector.processQueue(this.rootPath);
       }));
     } catch (e) {
       throw new Error(`Failed to parse the file: ${e}`);
@@ -39,7 +54,7 @@ export class OfficeParserConnector implements IDocumentParserConnector{
     return this.getSupportedFileTypes().includes(`.${file.name.split('.').pop()?.toLowerCase() || ''}`);
   }
 
-  private static async processQueue(): Promise<void> {
+  private static async processQueue(rootPath: string): Promise<void> {
     if (OfficeParserConnector.isProcessing) {
       return;
     }
@@ -50,13 +65,14 @@ export class OfficeParserConnector implements IDocumentParserConnector{
       const { file, resolve, reject } = OfficeParserConnector.queue.shift() as IParserQueue;
       try {
         const buffer = Buffer.from(await file.arrayBuffer());
-        const data = await officeParser.parseOfficeAsync(buffer);
+        const data = await officeParser.parseOfficeAsync(buffer, {
+          tempFilesLocation: rootPath,
+        });
         resolve(data);
         await new Promise((resolve) => setTimeout(resolve, 1000));
-      } catch (e) {
-        if (e instanceof Error) {
-          reject(e);
-        }
+      } catch (e: any) {
+        console.error('Error parsing the file', e);
+        reject(e);
       }
     }
 
