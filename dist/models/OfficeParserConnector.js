@@ -55,7 +55,9 @@ export class OfficeParserConnector {
                     tempFilesLocation: rootPath,
                 });
                 data = data.replaceAll(/\n\d+\n/g, '');
-                data = data.replaceAll("\n", " ");
+                data = data.replaceAll("\n", ' ');
+                data = data.replaceAll("\t", ' ');
+                data = data.replaceAll(/ +/g, ' ');
                 resolve(data);
                 await new Promise((newResolve) => setTimeout(newResolve, 1000));
             }

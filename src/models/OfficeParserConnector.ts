@@ -75,7 +75,9 @@ export class OfficeParserConnector implements IDocumentParserConnector{
           tempFilesLocation: rootPath,
         });
         data = data.replaceAll(/\n\d+\n/g, '');
-        data = data.replaceAll("\n", " ");
+        data = data.replaceAll("\n", ' ');
+        data = data.replaceAll("\t", ' ');
+        data = data.replaceAll(/ +/g, ' ');
         resolve(data);
         await new Promise((newResolve) => setTimeout(newResolve, 1000));
       } catch (e: any) {
