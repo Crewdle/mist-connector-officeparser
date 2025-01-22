@@ -44,14 +44,22 @@ export class OfficeParserConnector {
         }
         OfficeParserConnector.isProcessing = true;
         while (OfficeParserConnector.queue.length > 0) {
-            const { file, resolve, reject } = OfficeParserConnector.queue.shift();
+            const item = OfficeParserConnector.queue.shift();
+            if (!item) {
+                continue;
+            }
+            const { file, resolve, reject } = item;
             try {
                 const buffer = Buffer.from(await file.arrayBuffer());
-                const data = await officeParser.parseOfficeAsync(buffer, {
+                let data = await officeParser.parseOfficeAsync(buffer, {
                     tempFilesLocation: rootPath,
                 });
+                data = data.replaceAll(/\n\d+\n/g, '');
+                data = data.replaceAll("\n", ' ');
+                data = data.replaceAll("\t", ' ');
+                data = data.replaceAll(/ +/g, ' ');
                 resolve(data);
-                await new Promise((resolve) => setTimeout(resolve, 1000));
+                await new Promise((newResolve) => setTimeout(newResolve, 1000));
             }
             catch (e) {
                 console.error('Error parsing the file', e);
